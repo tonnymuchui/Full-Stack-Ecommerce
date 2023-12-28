@@ -1,14 +1,16 @@
-import { Navigation } from '@mui/icons-material';
 import './App.css';
-import Example from './customer/components/navigation/NavBar';
+import Navbar from './customer/components/navigation/NavBar';
+import HomePage from './customer/pages/HomePage/HomePage';
 
 function App() {
   return (
     <>
     <div className="">
-      <Example />
+      <Navbar />
     </div>
-    <div>Home</div>
+    <div>
+      <HomePage />
+    </div>
     </>
   );
 }
