@@ -6,7 +6,7 @@ import { MainCarouselData } from './MainCarouselData';
     
 const MainCarousel = () => {
 
- const items = MainCarouselData.map((item) => <img className='cursor-pointer' role='presentation' src={item.image} alt="/" />);
+ const items = MainCarouselData.map((item) => <img className='cursor-pointer' role='presentation' src={item.image} alt="/items" />);
 
    return (
    <AliceCarousel
