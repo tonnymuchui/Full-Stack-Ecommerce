@@ -39,5 +39,8 @@ public class AppConfig {
                 .and().httpBasic().and().formLogin();
         return httpSecurity.build();
     }
-
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 }
