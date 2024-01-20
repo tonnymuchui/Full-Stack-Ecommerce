@@ -4,12 +4,16 @@ import com.ecommerce.config.JwtProvider;
 import com.ecommerce.exception.UserException;
 import com.ecommerce.models.User;
 import com.ecommerce.repository.UserRepository;
+import com.ecommerce.request.LoginRequest;
 import com.ecommerce.response.AuthResponse;
+import com.ecommerce.service.CustomUserServiceImplementation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,9 +26,13 @@ public class AuthController {
 private UserRepository userRepository;
 private JwtProvider jwtProvider;
 private PasswordEncoder passwordEncoder;
+private CustomUserServiceImplementation customUserServiceImplementation;
 
-public AuthController(UserRepository userRepository){
+public AuthController(UserRepository userRepository, CustomUserServiceImplementation customUserServiceImplementation, PasswordEncoder passwordEncoder){
     this.userRepository = userRepository;
+    this.customUserServiceImplementation = customUserServiceImplementation;
+    this.passwordEncoder = passwordEncoder;
+
 }
 
 @PostMapping("/signup")
@@ -51,5 +59,28 @@ public ResponseEntity<AuthResponse> createdUserHandler(@RequestBody User user) t
     AuthResponse authResponse = new AuthResponse(token, "Success");
 
     return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.CREATED);
+}
+
+@PostMapping("/signin")
+public ResponseEntity<AuthResponse> loginUserHandler(@RequestBody LoginRequest loginRequest){
+    String userName = loginRequest.getEmail();
+    String password = loginRequest.getPassword();
+    Authentication authentication = authenticate(userName,password);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    String token = jwtProvider.generateToken(authentication);
+    AuthResponse authResponse = new AuthResponse(token, "Success login");
+
+    return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.CREATED);
+}
+public Authentication authenticate(String username, String password){
+    UserDetails userDetails = customUserServiceImplementation.loadUserByUsername(username);
+    if (userDetails == null){
+        throw new BadCredentialsException("Invalid username");
+    }
+    if (!passwordEncoder.matches(password,userDetails.getPassword())){
+        throw new BadCredentialsException("invalid password");
+    }
+return new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 }
 }
