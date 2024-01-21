@@ -28,10 +28,11 @@ private JwtProvider jwtProvider;
 private PasswordEncoder passwordEncoder;
 private CustomUserServiceImplementation customUserServiceImplementation;
 
-public AuthController(UserRepository userRepository, CustomUserServiceImplementation customUserServiceImplementation, PasswordEncoder passwordEncoder){
+public AuthController(UserRepository userRepository, CustomUserServiceImplementation customUserServiceImplementation, PasswordEncoder passwordEncoder,JwtProvider jwtProvider){
     this.userRepository = userRepository;
     this.customUserServiceImplementation = customUserServiceImplementation;
     this.passwordEncoder = passwordEncoder;
+    this.jwtProvider = jwtProvider;
 
 }
 
@@ -55,8 +56,12 @@ public ResponseEntity<AuthResponse> createdUserHandler(@RequestBody User user) t
     User savedUser = userRepository.save(createdUser);
     Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getEmail(),savedUser.getPassword());
     SecurityContextHolder.getContext().setAuthentication(authentication);
+
     String token = jwtProvider.generateToken(authentication);
-    AuthResponse authResponse = new AuthResponse(token, "Success");
+
+    AuthResponse authResponse = new AuthResponse();
+    authResponse.setJwt(token);
+    authResponse.setMessage("success signup");
 
     return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.CREATED);
 }
@@ -69,7 +74,9 @@ public ResponseEntity<AuthResponse> loginUserHandler(@RequestBody LoginRequest l
     SecurityContextHolder.getContext().setAuthentication(authentication);
 
     String token = jwtProvider.generateToken(authentication);
-    AuthResponse authResponse = new AuthResponse(token, "Success login");
+    AuthResponse authResponse = new AuthResponse();
+    authResponse.setJwt(token);
+    authResponse.setMessage("success login");
 
     return new ResponseEntity<AuthResponse>(authResponse, HttpStatus.CREATED);
 }
