@@ -9,6 +9,8 @@ import ProductDetails from '../customer/components/productDetails.jsx/ProductDet
 import Checkout from '../customer/components/Checkout/CheckOut'
 import Order from '../customer/components/Order/Order'
 import OrderDetails from '../customer/components/Order/OrderDetails'
+import RegisterForm from '../customer/Auth/RegisterForm'
+import { Login } from '@mui/icons-material'
 
 const CustomerRouters = () => {
   return (
@@ -17,6 +19,8 @@ const CustomerRouters = () => {
       <Navbar />
       </div>
       <Routes>
+      <Route path='/register' element={<RegisterForm />}></Route>
+      <Route path='/login' element={<Login />}></Route>
         <Route path='/' element={<HomePage />}></Route>
         <Route path='/cart' element={<Cart />}></Route>
         <Route path='/:levelOne/:levelTwo/:levelThree' element={<Product />}></Route>
