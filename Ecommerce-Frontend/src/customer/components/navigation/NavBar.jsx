@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
+import AuthModal from '../../Auth/AuthModal'
 
 const navigation = {
   categories: [
@@ -133,6 +134,14 @@ function classNames(...classes) {
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   // const navigation = useNavigate();
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const openAuthModel = () => {
+    setOpen(true);
+  };
+
 
   return (
     <div className="bg-white">
@@ -454,6 +463,7 @@ export default function Navbar() {
           </div>
         </nav>
       </header>
+      <AuthModal handleClose={handleClose} open={openAuthModel}/>
     </div>
   )
 }
