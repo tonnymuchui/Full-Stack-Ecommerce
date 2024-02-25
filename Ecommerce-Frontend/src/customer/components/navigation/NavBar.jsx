@@ -1,8 +1,10 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
 import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { useNavigate } from 'react-router-dom'
 import AuthModal from '../../Auth/AuthModal'
+import { useDispatch, useSelector } from 'react-redux'
+import { getUser, logout } from '../../../State/Auth/Action'
+import { useNavigate } from 'react-router-dom'
 
 const navigation = {
   categories: [
@@ -133,6 +135,10 @@ function classNames(...classes) {
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const { auth } = useSelector(store => store);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const jwt = localStorage.getItem("jwt");
   // const navigation = useNavigate();
   const handleClose = () => {
     setOpen(false);
@@ -141,8 +147,24 @@ export default function Navbar() {
   const openAuthModel = () => {
     setOpen(true);
   };
+  const handleLogout = () => {
+    dispatch(logout());
+    handleCloseUserMenu();
+  };
+  useEffect(() => {
+    if (jwt) {
+      dispatch(getUser());
+    }
+  }, [jwt, auth.jwt, dispatch]);
 
-
+useEffect(() => {
+  if (auth.user) {
+    handleClose();
+  }
+  if(location.pathname === "/login" || location.pathname === "/register"){
+    navigate(-1);
+  }
+},[auth.user]);
   return (
     <div className="bg-white">
       {/* Mobile menu */}
