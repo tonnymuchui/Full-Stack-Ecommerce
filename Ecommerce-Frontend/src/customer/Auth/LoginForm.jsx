@@ -4,6 +4,14 @@ import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
     const navigate = useNavigate();
+    const jwt = localStorage.getItem("jwt");
+    const { auth } = useSelector(store => store);
+
+    useEffect(() => {
+      if (jwt) {
+        dispatch(getUser());
+      }
+    }, [jwt, auth.jwt, dispatch]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
