@@ -1,11 +1,14 @@
 import { Button, Grid, TextField } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getUser } from "../../State/Auth/Action";
 
 const LoginForm = () => {
     const navigate = useNavigate();
     const jwt = localStorage.getItem("jwt");
     const { auth } = useSelector(store => store);
+    const dispatch = useDispatch();
 
     useEffect(() => {
       if (jwt) {

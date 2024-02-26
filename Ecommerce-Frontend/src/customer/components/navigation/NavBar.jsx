@@ -4,7 +4,7 @@ import { Bars3Icon, MagnifyingGlassIcon, ShoppingBagIcon, XMarkIcon } from '@her
 import AuthModal from '../../Auth/AuthModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUser, logout } from '../../../State/Auth/Action'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const navigation = {
   categories: [
@@ -139,6 +139,8 @@ export default function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const jwt = localStorage.getItem("jwt");
+  const location = useLocation();
+
   // const navigation = useNavigate();
   const handleClose = () => {
     setOpen(false);
